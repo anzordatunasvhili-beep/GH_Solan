@@ -1,0 +1,71 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: dark;
+}
+
+* {
+  -webkit-font-smoothing: antialiased;
+}
+
+html, body, #root {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  background: #08080c;
+  color: #e7e7ee;
+  font-family: 'Inter', system-ui, sans-serif;
+}
+
+::-webkit-scrollbar { width: 10px; height: 10px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: #2e2e42; border-radius: 8px; }
+::-webkit-scrollbar-thumb:hover { background: #3a3a52; }
+
+@layer components {
+  .card {
+    @apply rounded-2xl border border-line bg-ink-850/80 backdrop-blur-sm shadow-card;
+  }
+  .card-hover {
+    @apply transition duration-200 hover:border-white/20 hover:shadow-glow;
+  }
+  .btn {
+    @apply inline-flex items-center justify-center gap-2 rounded-xl px-4 py-2.5 text-sm font-semibold transition disabled:cursor-not-allowed disabled:opacity-40 select-none;
+  }
+  .btn-primary {
+    @apply btn bg-sol-gradient text-black hover:opacity-90 shadow-glow;
+  }
+  .btn-ghost {
+    @apply btn border border-line bg-white/5 text-white hover:bg-white/10;
+  }
+  .btn-danger {
+    @apply btn border border-red-500/40 bg-red-500/10 text-red-300 hover:bg-red-500/20;
+  }
+  .btn-success {
+    @apply btn bg-sol-green text-black hover:opacity-90 shadow-glow-green;
+  }
+  .input {
+    @apply w-full rounded-xl border border-line bg-ink-900 px-3.5 py-2.5 text-sm text-white placeholder-white/30 outline-none transition focus:border-sol-purple/60 focus:ring-2 focus:ring-sol-purple/20;
+  }
+  .label {
+    @apply mb-1.5 block text-xs font-medium uppercase tracking-wide text-white/50;
+  }
+  .chip {
+    @apply inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-medium;
+  }
+  .tab {
+    @apply cursor-pointer whitespace-nowrap rounded-lg px-3.5 py-2 text-sm font-medium text-white/55 transition hover:text-white;
+  }
+  .tab-active {
+    @apply bg-white/10 text-white;
+  }
+  .gradient-text {
+    @apply bg-sol-gradient bg-clip-text text-transparent;
+  }
+}

@@ -70,9 +70,15 @@ export function Layout() {
         </button>
 
         <div className="px-3 py-2">
-          <button onClick={() => navigate('/create')} className="btn-primary w-full">
-            <Plus size={16} /> New Project
-          </button>
+          {currentRole === 'stakeholder' ? (
+            <button onClick={() => navigate('/create')} className="btn-primary w-full">
+              <Plus size={16} /> New Project
+            </button>
+          ) : (
+            <button onClick={() => navigate('/invitations')} className="btn-primary w-full">
+              <Mail size={16} /> Invitations {pendingInvites > 0 ? `(${pendingInvites})` : ''}
+            </button>
+          )}
         </div>
 
         <nav className="mt-2 flex-1 space-y-1 px-3">

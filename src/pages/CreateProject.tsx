@@ -31,6 +31,22 @@ export function CreateProject() {
   const [terms, setTerms] = useState<GlobalTerms | null>(null);
   const [analysis, setAnalysis] = useState<AssistantAnalysis | null>(null);
 
+  if (store.currentRole !== 'stakeholder') {
+    return (
+      <div className="mx-auto max-w-lg py-12">
+        <Card className="p-8 text-center">
+          <Info size={30} className="mx-auto mb-3 text-sol-blue" />
+          <h1 className="text-xl font-bold text-white">Only Stakeholders create projects</h1>
+          <p className="mt-2 text-sm text-white/50">Projects are proposed and funded by a Stakeholder. As an {store.currentRole}, you receive invitations to review and approve the scope instead.</p>
+          <div className="mt-5 flex justify-center gap-2">
+            <button onClick={() => navigate('/invitations')} className="btn-primary">View invitations</button>
+            <button onClick={() => navigate('/dashboard')} className="btn-ghost">Dashboard</button>
+          </div>
+        </Card>
+      </div>
+    );
+  }
+
   function runAssistant() {
     const input = { title: form.title, category: form.category, summary: form.summary, requirements: form.requirements, totalBudget: form.totalBudget, estimatedDurationDays: form.estimatedDurationDays };
     const ms = generateMilestones(input);

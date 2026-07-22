@@ -1,13 +1,15 @@
 import { useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useStore } from '../store/useStore';
+import type { Milestone, Project } from '../types';
+
 import { actionItems, currentMilestone, projectProgress } from '../lib/actions';
 import { Card, Progress, StatusBadge, Stat, EmptyState, Avatar } from '../components/ui';
 import { PROJECT_STATUS, MILESTONE_STATUS } from '../lib/statuses';
-import { money } from '../lib/format';
+import { money, daysUntil } from '../lib/format';
 import { relativeTime } from '../lib/format';
 import { ROLE_LABEL } from '../lib/statuses';
-import { ArrowRight, FolderPlus, Zap, Clock } from 'lucide-react';
+import { ArrowRight, FolderPlus, Zap, Clock, Mail, CalendarClock } from 'lucide-react';
 
 export function Dashboard() {
   const navigate = useNavigate();
@@ -31,6 +33,14 @@ export function Dashboard() {
 
   const recent = activity.slice(0, 8);
 
+  const deadlines = useMemo(() => {
+    if (currentRole !== 'implementer') return [] as { p: Project; m: Milestone }[];
+    const out: { p: Project; m: Milestone }[] = [];
+    for (const p of projects) for (const m of p.milestones)
+      if (['in-progress', 'revision-requested'].includes(m.status) && m.deliveryDeadline) out.push({ p, m });
+    return out.sort((x, y) => new Date(x.m.deliveryDeadline!).getTime() - new Date(y.m.deliveryDeadline!).getTime());
+  }, [projects, currentRole]);
+
   return (
     <div className="mx-auto max-w-6xl space-y-6">
       <div className="flex items-end justify-between">
@@ -38,14 +48,18 @@ export function Dashboard() {
           <h1 className="text-2xl font-bold text-white">Dashboard</h1>
           <p className="text-sm text-white/45">Overview for {ROLE_LABEL[currentRole]}</p>
         </div>
-        <button onClick={() => navigate('/create')} className="btn-primary"><FolderPlus size={16} /> New Project</button>
+        {currentRole === 'stakeholder' ? (
+          <button onClick={() => navigate('/create')} className="btn-primary"><FolderPlus size={16} /> New Project</button>
+        ) : (
+          <button onClick={() => navigate('/invitations')} className="btn-primary"><Mail size={16} /> Invitations</button>
+        )}
       </div>
 
       {/* fund summary */}
       <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
-        <Stat label="Released" value={money(totals.released)} accent="text-sol-green" sub="Paid to implementer" />
-        <Stat label="Active in escrow" value={money(totals.active)} accent="text-sol-blue" sub="In-progress milestones" />
-        <Stat label="Locked (future)" value={money(totals.future)} sub="Awaiting future milestones" />
+        <Stat label={currentRole === 'implementer' ? 'Earned' : 'Released'} value={money(totals.released)} accent="text-sol-green" sub={currentRole === 'implementer' ? 'Paid out to you' : 'Paid to implementer'} />
+        <Stat label="Active in escrow" value={money(totals.active)} accent="text-sol-blue" sub={currentRole === 'implementer' ? 'Secured for your current work' : 'In-progress milestones'} />
+        <Stat label={currentRole === 'implementer' ? 'Upcoming earnings' : 'Locked (future)'} value={money(totals.future)} sub={currentRole === 'implementer' ? 'Future milestones, already funded' : 'Awaiting future milestones'} />
         <Stat label="Refundable" value={money(totals.refundable)} accent="text-white" sub="Returnable to stakeholder" />
         <Stat label="In dispute" value={money(totals.disputed)} accent={totals.disputed > 0 ? 'text-red-300' : 'text-white'} sub="Locked pending resolution" />
       </div>
@@ -81,7 +95,7 @@ export function Dashboard() {
           <div className="space-y-3">
             <h2 className="font-semibold text-white">Projects</h2>
             {myProjects.length === 0 ? (
-              <EmptyState icon={<FolderPlus size={36} />} title="No projects yet" body="Create your first milestone-based agreement to get started." action={<button onClick={() => navigate('/create')} className="btn-primary">New Project</button>} />
+              <EmptyState icon={<FolderPlus size={36} />} title="No projects yet" body={currentRole === 'stakeholder' ? 'Create your first milestone-based agreement to get started.' : 'Projects appear here once a Stakeholder invites you and the agreement begins.'} action={currentRole === 'stakeholder' ? <button onClick={() => navigate('/create')} className="btn-primary">New Project</button> : <button onClick={() => navigate('/invitations')} className="btn-primary">View invitations</button>} />
             ) : (
               myProjects.map((p) => {
                 const cm = currentMilestone(p);
@@ -124,8 +138,30 @@ export function Dashboard() {
           </div>
         </div>
 
-        {/* recent activity */}
-        <div>
+        <div className="space-y-4">
+          {deadlines.length > 0 && (
+            <Card className="p-5">
+              <div className="mb-3 flex items-center gap-2">
+                <CalendarClock size={16} className="text-sol-blue" />
+                <h2 className="font-semibold text-white">Upcoming deadlines</h2>
+              </div>
+              <div className="space-y-2">
+                {deadlines.slice(0, 5).map(({ p, m }) => {
+                  const d = daysUntil(m.deliveryDeadline!);
+                  return (
+                    <button key={m.id} onClick={() => navigate(`/project/${p.id}`)} className="flex w-full items-center gap-3 rounded-xl border border-line bg-white/5 px-3 py-2.5 text-left hover:bg-white/10">
+                      <div className="min-w-0 flex-1">
+                        <div className="truncate text-sm font-medium text-white">{m.title}</div>
+                        <div className="truncate text-xs text-white/45">{p.title}</div>
+                      </div>
+                      <span className={`shrink-0 text-xs font-semibold ${d <= 2 ? 'text-red-300' : 'text-white/60'}`}>{d < 0 ? `${-d}d overdue` : d === 0 ? 'due today' : `${d}d left`}</span>
+                    </button>
+                  );
+                })}
+              </div>
+            </Card>
+          )}
+          {/* recent activity */}
           <Card className="p-5">
             <div className="mb-3 flex items-center gap-2">
               <Clock size={16} className="text-white/50" />

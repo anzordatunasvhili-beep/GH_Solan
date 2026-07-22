@@ -8,7 +8,7 @@ import { projectProgress, currentMilestone, actionItems } from '../lib/actions';
 import type { Milestone, Project } from '../types';
 import {
   FolderPlus, Search, ArrowRight, ArrowUpDown,
-  Lock, Coins, Zap, Globe, Smartphone, Palette, FileCode2, Boxes, Layers,
+  Lock, Coins, Zap, Globe, Smartphone, Palette, FileCode2, Boxes, Layers, Mail,
 } from 'lucide-react';
 
 type Filter = 'all' | 'active' | 'awaiting' | 'closed';
@@ -85,16 +85,22 @@ export function Projects() {
         <div className="flex flex-wrap items-end justify-between gap-6">
           <div>
             <h1 className="text-3xl font-extrabold tracking-tight text-white">Projects</h1>
-            <p className="mt-1 text-sm text-white/45">{projects.length} agreements · escrow-backed, milestone by milestone</p>
+            <p className="mt-1 text-sm text-white/45">{currentRole === 'implementer' ? 'Deliver work, hit milestones, get paid from escrow' : 'Fund scope, approve milestones, release payments'} - {projects.length} agreements · escrow-backed, milestone by milestone</p>
             <div className="mt-5 flex flex-wrap gap-6">
               <HeroStat icon={Lock} label="Locked in escrow" value={money(stats.locked)} tint="text-sol-blue" />
-              <HeroStat icon={Coins} label="Released" value={money(stats.released)} tint="text-sol-green" />
+              <HeroStat icon={Coins} label={currentRole === 'implementer' ? 'Earned' : 'Released'} value={money(stats.released)} tint="text-sol-green" />
               <HeroStat icon={Zap} label="Active projects" value={String(stats.active)} tint="text-white/70" />
             </div>
           </div>
-          <button onClick={() => navigate('/create')} className="btn-primary !px-5 !py-3">
-            <FolderPlus size={17} /> New Project
-          </button>
+          {currentRole === 'stakeholder' ? (
+            <button onClick={() => navigate('/create')} className="btn-primary !px-5 !py-3">
+              <FolderPlus size={17} /> New Project
+            </button>
+          ) : (
+            <button onClick={() => navigate('/invitations')} className="btn-primary !px-5 !py-3">
+              <Mail size={17} /> Invitations
+            </button>
+          )}
         </div>
       </div>
 
@@ -126,8 +132,8 @@ export function Projects() {
         <EmptyState
           icon={<Boxes size={36} />}
           title="No projects found"
-          body="Try a different filter or create a new project."
-          action={<button onClick={() => navigate('/create')} className="btn-primary"><FolderPlus size={16} /> New Project</button>}
+          body={currentRole === 'stakeholder' ? 'Try a different filter or create a new project.' : 'Try a different filter, or check your invitations for new agreements.'}
+          action={currentRole === 'stakeholder' ? <button onClick={() => navigate('/create')} className="btn-primary"><FolderPlus size={16} /> New Project</button> : <button onClick={() => navigate('/invitations')} className="btn-primary"><Mail size={16} /> View invitations</button>}
         />
       ) : (
         <div className="grid gap-4 md:grid-cols-2">

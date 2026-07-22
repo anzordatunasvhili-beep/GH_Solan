@@ -61,6 +61,7 @@ interface StoreState {
   startMilestone: (id: string, milestoneId: string) => void;
   submitMilestone: (id: string, milestoneId: string, data: SubmitData) => void;
   approveCompletion: (id: string, milestoneId: string) => void;
+  confirmCloseout: (id: string, role: Role) => void;
   requestRevision: (id: string, milestoneId: string, data: RevisionData) => void;
   requestExtension: (id: string, milestoneId: string, data: ExtensionData) => void;
   approveExtension: (id: string, milestoneId: string) => void;
@@ -410,13 +411,34 @@ export const useStore = create<StoreState>()(
             p.funds.released += m.paymentAmount;
             recomputeReadiness(p);
             if (p.milestones.every((x) => x.status === 'paid' || x.status === 'cancelled' || x.status === 'refunded')) {
-              p.status = 'completed';
+              p.status = 'awaiting-closeout';
+              p.closeout = {};
             }
             return p;
           });
           pushActivity({ projectId: id, actor: 'stakeholder', action: 'Milestone approved', detail: `Approved “${m0.title}”.`, milestoneId });
           pushActivity({ projectId: id, actor: 'system', action: 'Payment released', detail: `Released ${m0.paymentAmount.toLocaleString()} USDC to the Implementer.`, milestoneId, txId: tx.id });
           notify({ audience: 'implementer', projectId: id, title: 'Payment released', body: `${m0.paymentAmount.toLocaleString()} USDC was released for “${m0.title}”.`, link: `/payments` });
+        },
+
+        confirmCloseout: (id, role) => {
+          patchProject(id, (p) => {
+            p.closeout = p.closeout ?? {};
+            if (role === 'stakeholder') p.closeout.stakeholderConfirmedAt = now();
+            if (role === 'implementer') p.closeout.implementerConfirmedAt = now();
+            if (p.closeout.stakeholderConfirmedAt && p.closeout.implementerConfirmedAt) p.status = 'completed';
+            return p;
+          });
+          const p1 = get().projects.find((x) => x.id === id)!;
+          pushActivity({ projectId: id, actor: role, action: 'Close-out confirmed', detail: `${role === 'stakeholder' ? 'Stakeholder' : 'Implementer'} confirmed the project close-out.` });
+          if (p1.status === 'completed') {
+            pushActivity({ projectId: id, actor: 'system', action: 'Project completed', detail: 'Both parties confirmed close-out. The agreement is complete and both earned +1 aura.' });
+            notify({ audience: 'stakeholder', projectId: id, title: 'Project completed', body: 'Both parties confirmed close-out. You earned +1 aura.', link: `/project/${id}` });
+            notify({ audience: 'implementer', projectId: id, title: 'Project completed', body: 'Both parties confirmed close-out. You earned +1 aura.', link: `/project/${id}` });
+          } else {
+            const other = role === 'stakeholder' ? 'implementer' : 'stakeholder';
+            notify({ audience: other, projectId: id, title: 'Close-out confirmation requested', body: 'The other party confirmed project close-out. Confirm to complete the agreement.', link: `/project/${id}` });
+          }
         },
 
         requestRevision: (id, milestoneId, data) => {
@@ -568,7 +590,8 @@ export const useStore = create<StoreState>()(
             recomputeReadiness(p);
             const openDisputes = get().disputes.filter((x) => x.projectId === p.id && x.status !== 'resolved' && x.id !== disputeId);
             if (openDisputes.length === 0) {
-              p.status = p.milestones.every((x) => ['paid', 'cancelled', 'refunded'].includes(x.status)) ? 'completed' : 'active';
+              const allSettled = p.milestones.every((x) => ['paid', 'cancelled', 'refunded'].includes(x.status));
+              if (allSettled) { p.status = 'awaiting-closeout'; p.closeout = p.closeout ?? {}; } else { p.status = 'active'; }
             }
             return p;
           });

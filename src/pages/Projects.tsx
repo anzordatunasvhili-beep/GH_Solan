@@ -22,7 +22,7 @@ const FILTERS: { id: Filter; label: string }[] = [
 ];
 
 function matchesFilter(p: Project, f: Filter): boolean {
-  if (f === 'active') return ['active', 'funded', 'in-dispute', 'paused'].includes(p.status);
+  if (f === 'active') return ['active', 'funded', 'in-dispute', 'paused', 'awaiting-closeout'].includes(p.status);
   if (f === 'awaiting') return p.status.startsWith('awaiting') || ['changes-requested', 'stakeholder-editing', 'draft'].includes(p.status);
   if (f === 'closed') return ['completed', 'cancelled', 'refunded'].includes(p.status);
   return true;
@@ -73,7 +73,7 @@ export function Projects() {
     for (const p of projects) {
       s.locked += p.funds.active + p.funds.future + p.funds.disputed;
       s.released += p.funds.released;
-      if (['active', 'funded', 'in-dispute', 'paused'].includes(p.status)) s.active += 1;
+      if (['active', 'funded', 'in-dispute', 'paused', 'awaiting-closeout'].includes(p.status)) s.active += 1;
     }
     return s;
   }, [projects]);

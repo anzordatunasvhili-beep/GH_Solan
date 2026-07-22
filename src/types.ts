@@ -280,6 +280,7 @@ export type ProjectStatus =
   | 'active'
   | 'paused'
   | 'in-dispute'
+  | 'awaiting-closeout'
   | 'completed'
   | 'cancelled'
   | 'refunded';
@@ -306,6 +307,7 @@ export interface Project {
   milestones: Milestone[];
 
   status: ProjectStatus;
+  closeout?: { stakeholderConfirmedAt?: string; implementerConfirmedAt?: string };
   currentVersion: number;
   versions: AgreementVersion[];
   amendments: Amendment[];

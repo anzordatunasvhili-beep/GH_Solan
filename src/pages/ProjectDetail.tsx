@@ -152,6 +152,13 @@ function PrimaryAction({ p, role, onSign, signing, onEditTab }: { p: Project; ro
   if (role === 'implementer') {
     if (p.status === 'awaiting-signatures' && !signed) return <button onClick={onSign} disabled={signing} className="btn-primary"><PenLine size={16} /> {signing ? 'Signing…' : 'Sign agreement'}</button>;
     if (p.status === 'awaiting-implementer-review' || p.status === 'changes-requested') return <button onClick={onEditTab} className="btn-primary"><ShieldCheck size={16} /> Review scope</button>;
+    const workable = p.milestones.find((m) => ['in-progress', 'revision-requested', 'ready-to-start'].includes(m.status));
+    if (p.status === 'active' && workable) return <button onClick={onEditTab} className="btn-primary"><Upload size={16} /> {workable.status === 'ready-to-start' ? 'Start next milestone' : 'Submit work'}</button>;
+  }
+  if (p.status === 'awaiting-closeout' && (role === 'stakeholder' || role === 'implementer')) {
+    const mine = role === 'stakeholder' ? p.closeout?.stakeholderConfirmedAt : p.closeout?.implementerConfirmedAt;
+    if (!mine) return <button onClick={() => store.confirmCloseout(p.id, role)} className="btn-primary"><CheckCircle2 size={16} /> Confirm close-out</button>;
+    return <Pill className="!bg-sol-green/15 !text-sol-green"><CheckCircle2 size={14} /> You confirmed close-out</Pill>;
   }
   if (signed && p.status === 'awaiting-signatures') return <Pill className="!bg-sol-green/15 !text-sol-green"><CheckCircle2 size={14} /> You signed · awaiting other party</Pill>;
   return null;
@@ -166,6 +173,7 @@ function OverviewTab({ p }: { p: Project }) {
   const gt = p.globalTerms;
   return (
     <div className="grid gap-4 lg:grid-cols-3">
+      {p.status === 'awaiting-closeout' && <div className="lg:col-span-3"><CloseoutCard p={p} /></div>}
       {p.status === 'completed' && <div className="lg:col-span-3"><CompletionReviewCard p={p} /></div>}
       <Card className="p-5 lg:col-span-2">
         <h3 className="mb-3 font-semibold text-white">Fund allocation</h3>
@@ -776,6 +784,42 @@ function CompletionReviewCard({ p }: { p: Project }) {
           </button>
         </div>
       )}
+    </Card>
+  );
+}
+
+function CloseoutCard({ p }: { p: Project }) {
+  const store = useStore();
+  const role = store.currentRole;
+  const rows: { r: Role; name: string; at?: string }[] = [
+    { r: 'stakeholder', name: p.stakeholder.name, at: p.closeout?.stakeholderConfirmedAt },
+    { r: 'implementer', name: p.implementer?.name ?? 'Implementer', at: p.closeout?.implementerConfirmedAt },
+  ];
+  const mine = rows.find((x) => x.r === role);
+  return (
+    <Card className="border-sol-blue/25 p-5">
+      <div className="flex items-center gap-2 text-sm font-semibold text-sol-blue">
+        <CheckCircle2 size={16} /> Final step - project close-out
+      </div>
+      <p className="mt-1.5 text-sm text-white/55">
+        All milestones are settled. Both parties now submit their final confirmation. When both confirm,
+        the project is marked completed and each side earns +1 aura.
+      </p>
+      <div className="mt-3 grid gap-2 sm:grid-cols-2">
+        {rows.map((x) => (
+          <div key={x.r} className={`flex items-center gap-3 rounded-xl border p-3.5 ${x.at ? 'border-sol-green/25 bg-sol-green/5' : 'border-line bg-white/5'}`}>
+            <span className={`h-2.5 w-2.5 rounded-full ${x.at ? 'bg-sol-green' : 'bg-white/25'}`} />
+            <div className="flex-1">
+              <div className="text-sm font-medium text-white">{x.name} <span className="text-white/40">- {titleCase(x.r)}</span></div>
+              <div className="text-xs text-white/45">{x.at ? `Confirmed ${formatDateTime(x.at)}` : 'Waiting for confirmation'}</div>
+            </div>
+            {x.r === role && !x.at && (
+              <button onClick={() => store.confirmCloseout(p.id, role)} className="btn-primary !px-3 !py-1.5 !text-xs">Confirm</button>
+            )}
+          </div>
+        ))}
+      </div>
+      {mine?.at && <div className="mt-3 text-xs text-white/45">You have confirmed. Waiting for the other party to submit their confirmation.</div>}
     </Card>
   );
 }

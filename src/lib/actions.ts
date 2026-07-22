@@ -22,6 +22,12 @@ export function actionItems(projects: Project[], disputes: Dispute[], role: Role
     const v = p.versions[p.versions.length - 1];
     const signed = (r: Role) => v?.signatures.some((s) => s.party === r);
 
+    if (p.status === 'awaiting-closeout' && (role === 'stakeholder' || role === 'implementer')) {
+      const confirmed = role === 'stakeholder' ? p.closeout?.stakeholderConfirmedAt : p.closeout?.implementerConfirmedAt;
+      if (!confirmed)
+        add({ id: p.id + '-closeout', title: 'Confirm project close-out', detail: p.title, projectId: p.id, link, urgency: 'high' });
+    }
+
     if (role === 'stakeholder') {
       if (p.status === 'awaiting-final-scope-approval')
         add({ id: p.id + '-scope', title: 'Confirm milestone scope', detail: p.title, projectId: p.id, link });

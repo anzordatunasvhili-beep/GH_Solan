@@ -27,6 +27,7 @@ export const PROJECT_STATUS: Record<ProjectStatus, StatusMeta> = {
   'active': { label: 'Active', cls: GREEN, dot: 'bg-sol-green' },
   'paused': { label: 'Paused', cls: AMBER, dot: 'bg-amber-300' },
   'in-dispute': { label: 'In Dispute', cls: RED, dot: 'bg-red-400' },
+  'awaiting-closeout': { label: 'Awaiting Close-out', cls: BLUE, dot: 'bg-sol-blue' },
   'completed': { label: 'Completed', cls: GREEN, dot: 'bg-sol-green' },
   'cancelled': { label: 'Cancelled', cls: NEUTRAL, dot: 'bg-white/40' },
   'refunded': { label: 'Refunded', cls: NEUTRAL, dot: 'bg-white/40' },

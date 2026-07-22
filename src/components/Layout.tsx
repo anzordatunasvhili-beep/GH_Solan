@@ -1,10 +1,11 @@
 import { useMemo, useState } from 'react';
-import { NavLink, Outlet, useNavigate } from 'react-router-dom';
+import { NavLink, Outlet, useNavigate, Navigate } from 'react-router-dom';
 import {
   LayoutDashboard, FolderKanban, Mail, Wallet, Gavel, Bell, User,
-  Plus, ChevronDown, LogOut, ShieldCheck,
+  Plus, ChevronDown, LogOut, ShieldCheck, IdCard, Sparkles,
 } from 'lucide-react';
 import { useStore } from '../store/useStore';
+import { useProfile, computeAura } from '../store/useProfile';
 import { actionItems } from '../lib/actions';
 import { Avatar, Modal } from './ui';
 import { DEMO_PARTIES } from '../lib/seed';
@@ -27,6 +28,9 @@ const ROLES: Role[] = ['stakeholder', 'implementer', 'arbiter'];
 export function Layout() {
   const navigate = useNavigate();
   const { currentRole, setRole, projects, disputes, connected, setWallet, notifications, markAllRead } = useStore();
+  const { session, signOut, kyc } = useProfile();
+  const aura = computeAura(currentRole, projects, !!kyc[currentRole]?.verified);
+  const kycVerified = !!kyc[currentRole]?.verified;
   const [walletOpen, setWalletOpen] = useState(false);
   const [notifOpen, setNotifOpen] = useState(false);
   const [roleOpen, setRoleOpen] = useState(false);
@@ -50,6 +54,8 @@ export function Layout() {
   }
 
   const available = detectWallets();
+
+  if (!session) return <Navigate to="/auth" replace />;
 
   return (
     <div className="flex min-h-screen bg-ink-950 bg-grid [background-size:22px_22px]">
@@ -105,6 +111,7 @@ export function Layout() {
               <Avatar name={DEMO_PARTIES[currentRole].name} color={DEMO_PARTIES[currentRole].avatarColor} size={22} />
               <span className="font-semibold">{DEMO_PARTIES[currentRole].name}</span>
               <span className="chip bg-white/5 text-white/50">{titleCase(currentRole)}</span>
+              <span className="chip border border-sol-purple/30 bg-sol-purple/10 text-sol-purple"><Sparkles size={11} /> {aura} aura</span>
               <ChevronDown size={14} />
             </button>
             {roleOpen && (
@@ -122,6 +129,14 @@ export function Layout() {
                     </div>
                   </button>
                 ))}
+                <div className="my-1 border-t border-white/10" />
+                <button onClick={() => { setRoleOpen(false); navigate('/kyc'); }} className="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-sm text-white/70 hover:bg-white/5">
+                  <IdCard size={15} /> {kycVerified ? 'KYC: verified' : 'Verify identity (KYC)'}
+                  {kycVerified && <ShieldCheck size={13} className="ml-auto text-sol-green" />}
+                </button>
+                <button onClick={() => { setRoleOpen(false); signOut(); navigate('/auth'); }} className="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-sm text-white/70 hover:bg-white/5">
+                  <LogOut size={15} /> Sign out
+                </button>
                 <div className="px-3 py-2 text-[11px] text-white/35">Switch roles to demo both sides of an agreement.</div>
               </div>
             )}

@@ -59,7 +59,7 @@ export function ProjectDetail() {
         <div className="flex flex-wrap items-start justify-between gap-4">
           <div>
             <div className="flex items-center gap-3">
-              <h1 className="text-2xl font-bold text-white">{p.title}</h1>
+              <h1 className="text-3xl font-bold tracking-tight text-white">{p.title}</h1>
               <StatusBadge meta={PROJECT_STATUS[p.status]} />
               {p.confidential && <Pill><Lock size={12} /> Confidential</Pill>}
             </div>

@@ -6,6 +6,7 @@ import {
 } from 'lucide-react';
 import type { ComponentType } from 'react';
 import { SolanaModel } from '../components/SolanaModel';
+import { LogoMark } from '../components/ui';
 
 const NAV_ITEMS = [
   { label: 'Use DRIU', to: '/dashboard' },
@@ -252,25 +253,7 @@ export function Landing() {
   );
 }
 
-/* Solana-style logo mark: three slanted gradient bars */
-function LogoMark() {
-  return (
-    <svg width="26" height="22" viewBox="0 0 26 22" fill="none" aria-hidden="true">
-      <defs>
-        <linearGradient id="driu-logo-grad" x1="0" y1="22" x2="26" y2="0" gradientUnits="userSpaceOnUse">
-          <stop stopColor="#9945FF" />
-          <stop offset="0.5" stopColor="#00C2FF" />
-          <stop offset="1" stopColor="#14F195" />
-        </linearGradient>
-      </defs>
-      <path d="M4.2 0.8h20.2c0.7 0 1 0.8 0.55 1.3l-3.5 3.6c-0.25 0.26-0.6 0.4-0.96 0.4H0.94c-0.7 0-1.05-0.8-0.56-1.3l3.5-3.6C4.13 0.94 4.48 0.8 4.84 0.8h-0.64Z" fill="url(#driu-logo-grad)" />
-      <path d="M4.2 15.9h20.2c0.7 0 1 0.8 0.55 1.3l-3.5 3.6c-0.25 0.26-0.6 0.4-0.96 0.4H0.94c-0.7 0-1.05-0.8-0.56-1.3l3.5-3.6c0.25-0.26 0.6-0.4 0.96-0.4h-0.64Z" fill="url(#driu-logo-grad)" />
-      <path d="M20.5 8.35H0.94c-0.7 0-1.05 0.8-0.56 1.3l3.5 3.6c0.25 0.26 0.6 0.4 0.96 0.4h20.2c0.7 0 1-0.8 0.55-1.3l-3.5-3.6c-0.25-0.26-0.6-0.4-0.95-0.4h-0.64Z" fill="url(#driu-logo-grad)" />
-    </svg>
-  );
-}
-
-/* Decorative gradient waves — placeholder until the three.js model mounts in #hero-3d */
+/* Decorative gradient waves behind the three.js model */
 function HeroWave() {
   return (
     <svg viewBox="0 0 600 480" fill="none" className="h-full w-full" aria-hidden="true">

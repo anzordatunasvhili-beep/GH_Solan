@@ -6,6 +6,7 @@ import { DEMO_PARTIES } from '../lib/seed';
 import { connectWallet, detectWallets } from '../lib/wallet';
 import type { Role } from '../types';
 import { Briefcase, Hammer, Scale, Wallet, ShieldCheck, ArrowRight, CheckCircle2 } from 'lucide-react';
+import { LogoMark } from '../components/ui';
 
 const ROLE_CARDS: { role: Role; icon: typeof Briefcase; title: string; desc: string }[] = [
   { role: 'stakeholder', icon: Briefcase, title: 'Stakeholder', desc: 'I fund work and approve milestones' },
@@ -46,19 +47,25 @@ export function Auth() {
   }
 
   return (
-    <div className="min-h-screen bg-ink-950">
+    <div className="min-h-screen bg-black">
       <div className="mx-auto grid min-h-screen max-w-6xl grid-cols-1 lg:grid-cols-2">
         {/* left: brand panel */}
-        <div className="relative hidden flex-col justify-between border-r border-line bg-ink-900 p-12 lg:flex">
-          <button onClick={() => navigate('/')} className="flex items-center gap-2 text-left">
-            <span className="grid h-9 w-9 place-items-center rounded-xl bg-sol-gradient font-black text-black">D</span>
-            <span className="text-xl font-extrabold tracking-tight text-white">DRIU</span>
+        <div className="relative hidden flex-col justify-between overflow-hidden border-r border-white/[0.06] p-12 lg:flex">
+          <div className="pointer-events-none absolute inset-0">
+            <div className="absolute -top-32 -left-24 h-96 w-96 rounded-full bg-sol-purple/25 blur-[130px]" />
+            <div className="absolute bottom-[-15%] right-[-10%] h-80 w-80 rounded-full bg-sol-green/15 blur-[120px]" />
+          </div>
+          <button onClick={() => navigate('/')} className="relative flex items-center gap-2.5 text-left">
+            <LogoMark />
+            <span className="text-lg font-black uppercase tracking-[0.18em] text-white">Driu</span>
           </button>
-          <div>
-            <h1 className="text-3xl font-extrabold leading-tight text-white">
-              Agreements built on <span className="gradient-text">trust you can verify</span>.
+          <div className="relative">
+            <h1 className="text-4xl leading-tight tracking-tight text-white">
+              <span className="font-bold">Agreements built on</span>
+              <br />
+              <span className="font-light text-white/90">trust you can verify.</span>
             </h1>
-            <p className="mt-4 max-w-md text-white/55">
+            <p className="mt-4 max-w-md text-[#9ca3b8]">
               Sign in to define scope together, secure the budget in escrow, and build reputation —
               <span className="text-white/80"> aura</span> — with every verified identity and completed contract.
             </p>
@@ -68,20 +75,20 @@ export function Auth() {
               <Bullet text="Reviews and reputation travel with your wallet" />
             </div>
           </div>
-          <div className="text-xs text-white/35">Devnet demo · non-custodial signing</div>
+          <div className="relative text-xs text-white/35">Devnet demo · non-custodial signing</div>
         </div>
 
         {/* right: form */}
         <div className="flex items-center justify-center p-6 sm:p-12">
           <div className="w-full max-w-md">
             <div className="mb-6 lg:hidden">
-              <span className="grid h-9 w-9 place-items-center rounded-xl bg-sol-gradient font-black text-black">D</span>
+              <LogoMark size={32} />
             </div>
-            <h2 className="text-2xl font-bold text-white">{mode === 'signin' ? 'Welcome back' : 'Create your account'}</h2>
-            <p className="mt-1 text-sm text-white/45">{mode === 'signin' ? 'Sign in to continue to DRIU.' : 'Join as a Stakeholder, Implementer, or Arbiter.'}</p>
+            <h2 className="text-3xl font-bold tracking-tight text-white">{mode === 'signin' ? 'Welcome back' : 'Create your account'}</h2>
+            <p className="mt-1 text-sm text-[#9ca3b8]">{mode === 'signin' ? 'Sign in to continue to DRIU.' : 'Join as a Stakeholder, Implementer, or Arbiter.'}</p>
 
             {/* tabs */}
-            <div className="mt-6 flex gap-1 rounded-xl border border-line bg-white/5 p-1">
+            <div className="mt-6 flex gap-1 rounded-full border border-white/10 bg-white/[0.06] p-1">
               <button onClick={() => setMode('signin')} className={`tab flex-1 text-center ${mode === 'signin' ? 'tab-active' : ''}`}>Sign in</button>
               <button onClick={() => setMode('signup')} className={`tab flex-1 text-center ${mode === 'signup' ? 'tab-active' : ''}`}>Sign up</button>
             </div>

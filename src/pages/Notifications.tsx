@@ -13,8 +13,9 @@ export function Notifications() {
     <div className="mx-auto max-w-3xl space-y-5">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-white">Notifications</h1>
-          <p className="text-sm text-white/45">{mine.filter((n) => !n.read).length} unread</p>
+          <p className="eyebrow text-sol-purple">Inbox</p>
+          <h1 className="page-title mt-1">Notifications</h1>
+          <p className="mt-1 text-sm text-[#9ca3b8]">{mine.filter((n) => !n.read).length} unread</p>
         </div>
         {mine.length > 0 && <button onClick={markAllRead} className="btn-ghost"><CheckCheck size={16} /> Mark all read</button>}
       </div>

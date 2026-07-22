@@ -10,7 +10,7 @@ export function Contract() {
   const project = useStore((s) => s.projects.find((p) => p.id === id));
 
   if (!project) {
-    return <div className="grid min-h-screen place-items-center bg-ink-950 text-white/60">Project not found.</div>;
+    return <div className="grid min-h-screen place-items-center bg-black text-white/60">Project not found.</div>;
   }
   const p = project;
   const version: AgreementVersion | undefined = p.versions[p.versions.length - 1];
@@ -24,7 +24,7 @@ export function Contract() {
   const fullyExecuted = !!sigOf('stakeholder') && !!sigOf('implementer');
 
   return (
-    <div className="min-h-screen bg-ink-950 py-8 print:bg-white print:py-0">
+    <div className="min-h-screen bg-black py-8 print:bg-white print:py-0">
       {/* toolbar (hidden when printing) */}
       <div className="mx-auto mb-6 flex max-w-[820px] items-center justify-between px-4 print:hidden">
         <button onClick={() => navigate(`/project/${p.id}`)} className="flex items-center gap-1.5 text-sm text-white/60 hover:text-white">

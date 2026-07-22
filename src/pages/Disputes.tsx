@@ -11,7 +11,8 @@ export function Disputes() {
   if (disputes.length === 0) {
     return (
       <div className="mx-auto max-w-4xl">
-        <h1 className="mb-4 text-2xl font-bold text-white">Disputes</h1>
+        <p className="eyebrow text-sol-purple">Resolution</p>
+        <h1 className="page-title mb-4 mt-1">Disputes</h1>
         <EmptyState icon={<Gavel size={36} />} title="No disputes" body="Disputes appear here when a milestone submission is contested. An Arbiter resolves them by release, refund, split, revision, or cancellation." />
       </div>
     );
@@ -19,8 +20,9 @@ export function Disputes() {
   return (
     <div className="mx-auto max-w-4xl space-y-5">
       <div>
-        <h1 className="text-2xl font-bold text-white">Dispute center</h1>
-        <p className="text-sm text-white/45">Viewing as {ROLE_LABEL[currentRole]}</p>
+        <p className="eyebrow text-sol-purple">Resolution</p>
+        <h1 className="page-title mt-1">Dispute center</h1>
+        <p className="mt-1 text-sm text-[#9ca3b8]">Viewing as {ROLE_LABEL[currentRole]}</p>
       </div>
       {disputes.map((d) => {
         const p = projects.find((x) => x.id === d.projectId);

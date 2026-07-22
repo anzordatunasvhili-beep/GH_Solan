@@ -81,11 +81,13 @@ export function Projects() {
   return (
     <div className="mx-auto max-w-6xl space-y-6">
       {/* header */}
-      <div className="rounded-2xl border border-line bg-ink-850 p-7">
-        <div className="flex flex-wrap items-end justify-between gap-6">
+      <div className="relative overflow-hidden rounded-3xl border border-white/[0.08] bg-white/[0.03] p-7">
+        <div className="pointer-events-none absolute -right-24 -top-24 h-64 w-64 rounded-full bg-sol-purple/20 blur-[100px]" />
+        <div className="relative flex flex-wrap items-end justify-between gap-6">
           <div>
-            <h1 className="text-3xl font-extrabold tracking-tight text-white">Projects</h1>
-            <p className="mt-1 text-sm text-white/45">{currentRole === 'implementer' ? 'Deliver work, hit milestones, get paid from escrow' : 'Fund scope, approve milestones, release payments'} - {projects.length} agreements · escrow-backed, milestone by milestone</p>
+            <p className="eyebrow text-sol-purple">Agreements</p>
+            <h1 className="page-title mt-1">Projects</h1>
+            <p className="mt-1 text-sm text-[#9ca3b8]">{currentRole === 'implementer' ? 'Deliver work, hit milestones, get paid from escrow' : 'Fund scope, approve milestones, release payments'} - {projects.length} agreements · escrow-backed, milestone by milestone</p>
             <div className="mt-5 flex flex-wrap gap-6">
               <HeroStat icon={Lock} label="Locked in escrow" value={money(stats.locked)} tint="text-sol-blue" />
               <HeroStat icon={Coins} label={currentRole === 'implementer' ? 'Earned' : 'Released'} value={money(stats.released)} tint="text-sol-green" />
@@ -110,7 +112,7 @@ export function Projects() {
           <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-white/30" />
           <input value={q} onChange={(e) => setQ(e.target.value)} placeholder="Search by title, category, summary…" className="input pl-9" />
         </div>
-        <div className="flex gap-1 rounded-xl border border-line bg-white/5 p-1">
+        <div className="flex gap-1 rounded-full border border-white/10 bg-white/[0.06] p-1">
           {FILTERS.map((f) => (
             <button key={f.id} onClick={() => setFilter(f.id)} className={`tab flex items-center gap-1.5 ${filter === f.id ? 'tab-active' : ''}`}>
               {f.label}
@@ -168,7 +170,7 @@ function ProjectCard({ p, next, onOpen, otherRole }: { p: Project; next?: string
   return (
     <button
       onClick={onOpen}
-      className="group relative overflow-hidden rounded-2xl border border-line bg-ink-850 p-5 text-left transition duration-200 hover:border-white/20 hover:bg-ink-800"
+      className="group relative overflow-hidden rounded-2xl border border-white/[0.08] bg-white/[0.03] p-5 text-left transition duration-200 hover:border-white/20 hover:bg-white/[0.05]"
     >
       <div className="flex items-start justify-between gap-3">
         <div className="flex min-w-0 items-start gap-3">

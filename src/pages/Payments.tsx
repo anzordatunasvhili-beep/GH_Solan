@@ -15,8 +15,9 @@ export function Payments() {
   return (
     <div className="mx-auto max-w-5xl space-y-5">
       <div>
-        <h1 className="text-2xl font-bold text-white">Payments</h1>
-        <p className="text-sm text-white/45">Every financial action across your projects</p>
+        <p className="eyebrow text-sol-green">On-chain activity</p>
+        <h1 className="page-title mt-1">Payments</h1>
+        <p className="mt-1 text-sm text-[#9ca3b8]">Every financial action across your projects</p>
       </div>
       <div className="grid gap-3 sm:grid-cols-3">
         <Stat label="Total funded" value={money(funded)} accent="text-sol-blue" />

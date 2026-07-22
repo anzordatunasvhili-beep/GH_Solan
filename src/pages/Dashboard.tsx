@@ -45,8 +45,9 @@ export function Dashboard() {
     <div className="mx-auto max-w-6xl space-y-6">
       <div className="flex items-end justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-white">Dashboard</h1>
-          <p className="text-sm text-white/45">Overview for {ROLE_LABEL[currentRole]}</p>
+          <p className="eyebrow text-sol-green">Overview</p>
+          <h1 className="page-title mt-1">Dashboard</h1>
+          <p className="mt-1 text-sm text-[#9ca3b8]">Overview for {ROLE_LABEL[currentRole]}</p>
         </div>
         {currentRole === 'stakeholder' ? (
           <button onClick={() => navigate('/create')} className="btn-primary"><FolderPlus size={16} /> New Project</button>

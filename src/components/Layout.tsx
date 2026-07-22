@@ -7,7 +7,7 @@ import {
 import { useStore } from '../store/useStore';
 import { useProfile, computeAura } from '../store/useProfile';
 import { actionItems } from '../lib/actions';
-import { Avatar, Modal } from './ui';
+import { Avatar, Modal, LogoMark } from './ui';
 import { DEMO_PARTIES } from '../lib/seed';
 import { connectWallet, detectWallets, explorerAddr } from '../lib/wallet';
 import type { Role } from '../types';
@@ -58,13 +58,19 @@ export function Layout() {
   if (!session) return <Navigate to="/auth" replace />;
 
   return (
-    <div className="flex min-h-screen bg-ink-950 bg-grid [background-size:22px_22px]">
+    <div className="relative flex min-h-screen bg-black">
+      {/* ambient glows, landing-style */}
+      <div className="pointer-events-none fixed inset-0 z-0">
+        <div className="absolute -top-40 right-[-10%] h-[30rem] w-[30rem] rounded-full bg-sol-purple/15 blur-[150px]" />
+        <div className="absolute bottom-[-15%] left-1/3 h-80 w-80 rounded-full bg-sol-green/[0.07] blur-[130px]" />
+      </div>
+
       {/* Sidebar */}
-      <aside className="sticky top-0 flex h-screen w-60 shrink-0 flex-col border-r border-line bg-ink-900/80 backdrop-blur">
-        <button onClick={() => navigate('/')} className="flex items-center gap-2 px-5 py-5 text-left">
-          <span className="grid h-9 w-9 place-items-center rounded-xl bg-sol-gradient font-black text-black shadow-glow">D</span>
+      <aside className="sticky top-0 z-10 flex h-screen w-60 shrink-0 flex-col border-r border-white/[0.06] bg-black/85 backdrop-blur-md">
+        <button onClick={() => navigate('/')} className="flex items-center gap-2.5 px-5 py-5 text-left">
+          <LogoMark />
           <div>
-            <div className="text-lg font-extrabold tracking-tight text-white">DRIU</div>
+            <div className="text-lg font-black uppercase tracking-[0.18em] text-white">Driu</div>
             <div className="text-[10px] uppercase tracking-widest text-white/40">Milestone Escrow</div>
           </div>
         </button>
@@ -87,7 +93,7 @@ export function Layout() {
               key={to}
               to={to}
               className={({ isActive }) =>
-                `flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition ${
+                `flex items-center gap-3 rounded-full px-4 py-2.5 text-sm font-medium transition ${
                   isActive ? 'bg-white/10 text-white' : 'text-white/55 hover:bg-white/5 hover:text-white'
                 }`
               }
@@ -102,14 +108,14 @@ export function Layout() {
           ))}
         </nav>
 
-        <div className="border-t border-line p-3 text-[11px] text-white/35">
+        <div className="border-t border-white/[0.06] p-3 text-[11px] text-white/35">
           Devnet demo · simulated escrow
         </div>
       </aside>
 
       {/* Main */}
-      <div className="flex min-w-0 flex-1 flex-col">
-        <header className="sticky top-0 z-30 flex items-center gap-3 border-b border-line bg-ink-900/80 px-6 py-3 backdrop-blur">
+      <div className="z-10 flex min-w-0 flex-1 flex-col">
+        <header className="sticky top-0 z-30 flex items-center gap-3 border-b border-white/[0.06] bg-black/85 px-6 py-3 backdrop-blur-md">
           <div className="text-sm text-white/50">Viewing as</div>
           {/* Role switcher */}
           <div className="relative">
@@ -121,7 +127,7 @@ export function Layout() {
               <ChevronDown size={14} />
             </button>
             {roleOpen && (
-              <div className="absolute left-0 top-full z-40 mt-2 w-64 card p-1" onMouseLeave={() => setRoleOpen(false)}>
+              <div className="absolute left-0 top-full z-40 mt-2 w-64 rounded-2xl border border-white/10 bg-[#0c0c12] p-1 shadow-card" onMouseLeave={() => setRoleOpen(false)}>
                 {ROLES.map((r) => (
                   <button
                     key={r}
@@ -151,12 +157,12 @@ export function Layout() {
           <div className="ml-auto flex items-center gap-2">
             {/* Notifications */}
             <div className="relative">
-              <button onClick={() => setNotifOpen((o) => !o)} className="relative rounded-xl border border-line bg-white/5 p-2.5 text-white/70 hover:bg-white/10">
+              <button onClick={() => setNotifOpen((o) => !o)} className="relative rounded-full border border-white/10 bg-white/[0.06] p-2.5 text-white/70 transition hover:border-white/20 hover:bg-white/10">
                 <Bell size={18} />
                 {unread.length > 0 && <span className="absolute -right-1 -top-1 grid h-4 w-4 place-items-center rounded-full bg-sol-purple text-[10px] font-bold text-black">{unread.length}</span>}
               </button>
               {notifOpen && (
-                <div className="absolute right-0 top-full z-40 mt-2 w-80 card p-2" onMouseLeave={() => setNotifOpen(false)}>
+                <div className="absolute right-0 top-full z-40 mt-2 w-80 rounded-2xl border border-white/10 bg-[#0c0c12] p-2 shadow-card" onMouseLeave={() => setNotifOpen(false)}>
                   <div className="flex items-center justify-between px-2 py-1">
                     <span className="text-sm font-semibold text-white">Notifications</span>
                     <button className="text-xs text-sol-purple hover:underline" onClick={markAllRead}>Mark all read</button>

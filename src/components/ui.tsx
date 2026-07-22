@@ -3,6 +3,25 @@ import { useEffect } from 'react';
 import { X } from 'lucide-react';
 import type { StatusMeta } from '../lib/statuses';
 
+/* Solana-style logo mark: three slanted gradient bars */
+export function LogoMark({ size = 26 }: { size?: number }) {
+  const h = Math.round(size * (22 / 26));
+  return (
+    <svg width={size} height={h} viewBox="0 0 26 22" fill="none" aria-hidden="true">
+      <defs>
+        <linearGradient id="driu-logo-grad" x1="0" y1="22" x2="26" y2="0" gradientUnits="userSpaceOnUse">
+          <stop stopColor="#9945FF" />
+          <stop offset="0.5" stopColor="#00C2FF" />
+          <stop offset="1" stopColor="#14F195" />
+        </linearGradient>
+      </defs>
+      <path d="M4.2 0.8h20.2c0.7 0 1 0.8 0.55 1.3l-3.5 3.6c-0.25 0.26-0.6 0.4-0.96 0.4H0.94c-0.7 0-1.05-0.8-0.56-1.3l3.5-3.6C4.13 0.94 4.48 0.8 4.84 0.8h-0.64Z" fill="url(#driu-logo-grad)" />
+      <path d="M4.2 15.9h20.2c0.7 0 1 0.8 0.55 1.3l-3.5 3.6c-0.25 0.26-0.6 0.4-0.96 0.4H0.94c-0.7 0-1.05-0.8-0.56-1.3l3.5-3.6c0.25-0.26 0.6-0.4 0.96-0.4h-0.64Z" fill="url(#driu-logo-grad)" />
+      <path d="M20.5 8.35H0.94c-0.7 0-1.05 0.8-0.56 1.3l3.5 3.6c0.25 0.26 0.6 0.4 0.96 0.4h20.2c0.7 0 1-0.8 0.55-1.3l-3.5-3.6c-0.25-0.26-0.6-0.4-0.95-0.4h-0.64Z" fill="url(#driu-logo-grad)" />
+    </svg>
+  );
+}
+
 export function StatusBadge({ meta }: { meta: StatusMeta }) {
   return (
     <span className={`chip ${meta.cls}`}>
@@ -56,7 +75,7 @@ export function Modal({ open, onClose, title, children, wide = false }: { open: 
   return (
     <div className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto bg-black/70 p-4 backdrop-blur-sm" onClick={onClose}>
       <div
-        className={`card mt-[6vh] w-full ${wide ? 'max-w-3xl' : 'max-w-lg'} animate-fade-in p-6`}
+        className={`mt-[6vh] w-full rounded-2xl border border-white/10 bg-[#0c0c12] shadow-card ${wide ? 'max-w-3xl' : 'max-w-lg'} animate-fade-in p-6`}
         onClick={(e) => e.stopPropagation()}
       >
         <div className="mb-4 flex items-center justify-between">

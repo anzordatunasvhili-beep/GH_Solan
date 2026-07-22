@@ -18,8 +18,9 @@ export function Invitations() {
   return (
     <div className="mx-auto max-w-4xl space-y-5">
       <div>
-        <h1 className="text-2xl font-bold text-white">Invitations</h1>
-        <p className="text-sm text-white/45">{currentRole === 'implementer' ? 'Projects waiting for your review' : 'Agreements you’ve sent for review'}</p>
+        <p className="eyebrow text-sol-blue">Review queue</p>
+        <h1 className="page-title mt-1">Invitations</h1>
+        <p className="mt-1 text-sm text-[#9ca3b8]">{currentRole === 'implementer' ? 'Projects waiting for your review' : 'Agreements you’ve sent for review'}</p>
       </div>
       {list.length === 0 ? (
         <EmptyState icon={<Mail size={36} />} title="No pending invitations" body={currentRole === 'implementer' ? 'When a Stakeholder invites you to a project, it will appear here.' : 'Send an agreement to an Implementer to see it here.'} />

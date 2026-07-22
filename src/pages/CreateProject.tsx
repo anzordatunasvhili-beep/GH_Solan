@@ -89,8 +89,9 @@ export function CreateProject() {
   return (
     <div className="mx-auto max-w-4xl space-y-6">
       <div>
-        <h1 className="text-2xl font-bold text-white">New project</h1>
-        <p className="text-sm text-white/45">Turn a brief into a measurable, escrow-backed agreement.</p>
+        <p className="eyebrow text-sol-purple">Build</p>
+        <h1 className="page-title mt-1">New project</h1>
+        <p className="mt-1 text-sm text-[#9ca3b8]">Turn a brief into a measurable, escrow-backed agreement.</p>
       </div>
 
       {/* stepper */}

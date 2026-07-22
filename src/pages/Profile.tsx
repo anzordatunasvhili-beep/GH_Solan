@@ -23,7 +23,10 @@ export function Profile() {
 
   return (
     <div className="mx-auto max-w-3xl space-y-5">
-      <h1 className="text-2xl font-bold text-white">Profile & settings</h1>
+      <div>
+        <p className="eyebrow text-sol-green">Account</p>
+        <h1 className="page-title mt-1">Profile & settings</h1>
+      </div>
 
       <Card className="p-6">
         <div className="flex flex-wrap items-center gap-4">

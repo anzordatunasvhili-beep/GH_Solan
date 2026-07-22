@@ -48,7 +48,7 @@ export function Kyc() {
           <div className="mx-auto mb-4 grid h-16 w-16 place-items-center rounded-full bg-sol-green/15 text-sol-green">
             <ShieldCheck size={30} />
           </div>
-          <h1 className="text-2xl font-bold text-white">Identity verified</h1>
+          <h1 className="text-3xl font-bold tracking-tight text-white">Identity verified</h1>
           <p className="mt-1 text-sm text-white/50">You earned <span className="font-semibold text-sol-green">+1 aura</span> for verifying your identity.</p>
           <div className="mt-5 rounded-xl border border-line bg-white/5 p-4 text-left text-sm">
             <Line k="Legal name" v={existing.legalName} />
@@ -69,8 +69,8 @@ export function Kyc() {
     <div className="mx-auto max-w-lg space-y-6 py-4">
       <div className="text-center">
         <div className="mx-auto mb-3 grid h-12 w-12 place-items-center rounded-xl bg-sol-purple/15 text-sol-purple"><IdCard size={22} /></div>
-        <h1 className="text-2xl font-bold text-white">Identity verification (KYC)</h1>
-        <p className="mt-1 text-sm text-white/45">Verify once to earn <span className="text-sol-green">+1 aura</span> and unlock trusted-party status.</p>
+        <h1 className="text-3xl font-bold tracking-tight text-white">Identity verification (KYC)</h1>
+        <p className="mt-1 text-sm text-[#9ca3b8]">Verify once to earn <span className="text-sol-green">+1 aura</span> and unlock trusted-party status.</p>
       </div>
 
       {/* stepper */}

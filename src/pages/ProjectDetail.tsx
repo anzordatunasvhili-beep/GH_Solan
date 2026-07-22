@@ -10,6 +10,8 @@ import { projectProgress } from '../lib/actions';
 import { explorerTx } from '../lib/wallet';
 import { isValid, validateAgreement } from '../lib/validation';
 import type { Milestone, Project, Role } from '../types';
+import { useProfile } from '../store/useProfile';
+import { Star, Sparkles } from 'lucide-react';
 import {
   ArrowLeft, Send, PenLine, ShieldCheck, Coins, Play, Upload, CheckCircle2,
   RotateCcw, Gavel, Clock, FileText, GitBranch, Activity as ActIcon, Layers,
@@ -164,6 +166,7 @@ function OverviewTab({ p }: { p: Project }) {
   const gt = p.globalTerms;
   return (
     <div className="grid gap-4 lg:grid-cols-3">
+      {p.status === 'completed' && <div className="lg:col-span-3"><CompletionReviewCard p={p} /></div>}
       <Card className="p-5 lg:col-span-2">
         <h3 className="mb-3 font-semibold text-white">Fund allocation</h3>
         <FundBar p={p} />
@@ -401,9 +404,14 @@ function ScopeDot({ on }: { on: boolean }) {
 
 // ---------------- Agreement ----------------
 function AgreementTab({ p }: { p: Project }) {
-  if (p.versions.length === 0) return <InfoBanner tone="info">No signed version yet. The agreement is locked and hashed once both parties approve the scope.</InfoBanner>;
+  const navigate = useNavigate();
   return (
     <div className="space-y-3">
+      <div className="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-line bg-white/5 px-4 py-3">
+        <div className="text-sm text-white/60">Formal contract document — printable and exportable to PDF, with on-chain signatures.</div>
+        <button onClick={() => navigate(`/project/${p.id}/contract`)} className="btn-primary !py-2"><FileText size={15} /> View / Print contract</button>
+      </div>
+      {p.versions.length === 0 && <InfoBanner tone="info">No signed version yet. The agreement is locked and hashed once both parties approve the scope. You can still preview the draft contract above.</InfoBanner>}
       {[...p.versions].reverse().map((v) => (
         <Card key={v.version} className="p-5">
           <div className="flex items-center justify-between">
@@ -718,5 +726,56 @@ function AmendModal({ p, onClose }: { p: Project; onClose: () => void }) {
         </div>
       </div>
     </Modal>
+  );
+}
+
+function CompletionReviewCard({ p }: { p: Project }) {
+  const role = useStore((s) => s.currentRole);
+  const { reviews, addReview } = useProfile();
+  const [rating, setRating] = useState(5);
+  const [comment, setComment] = useState('');
+  if (role === 'arbiter') return null;
+  const otherRole: Role = role === 'stakeholder' ? 'implementer' : 'stakeholder';
+  const otherName = otherRole === 'stakeholder' ? p.stakeholder.name : p.implementer?.name ?? 'Counterparty';
+  const myName = role === 'stakeholder' ? p.stakeholder.name : p.implementer?.name ?? 'Me';
+  const mine = reviews.find((r) => r.projectId === p.id && r.fromRole === role);
+
+  return (
+    <Card className="border-sol-green/25 p-5">
+      <div className="flex items-center gap-2 text-sm font-semibold text-sol-green">
+        <Sparkles size={16} /> Contract completed — both parties earned +1 aura
+      </div>
+      {mine ? (
+        <div className="mt-3 rounded-xl border border-line bg-white/5 p-4">
+          <div className="flex items-center justify-between text-sm">
+            <span className="text-white/60">Your review of {otherName}</span>
+            <span className="flex items-center gap-0.5">
+              {[1, 2, 3, 4, 5].map((i) => (
+                <Star key={i} size={13} className={i <= mine.rating ? 'fill-amber-300 text-amber-300' : 'text-white/20'} />
+              ))}
+            </span>
+          </div>
+          <p className="mt-1.5 text-sm text-white/70">{mine.comment}</p>
+        </div>
+      ) : (
+        <div className="mt-3">
+          <div className="mb-2 text-sm text-white/60">Leave a review for <span className="font-medium text-white">{otherName}</span> — it will appear on their profile.</div>
+          <div className="mb-2 flex items-center gap-1">
+            {[1, 2, 3, 4, 5].map((i) => (
+              <button key={i} onClick={() => setRating(i)} className="p-0.5">
+                <Star size={20} className={i <= rating ? 'fill-amber-300 text-amber-300' : 'text-white/25 hover:text-white/50'} />
+              </button>
+            ))}
+          </div>
+          <textarea className="input min-h-[70px]" placeholder="How was the collaboration?" value={comment} onChange={(e) => setComment(e.target.value)} />
+          <button
+            onClick={() => addReview({ projectId: p.id, projectTitle: p.title, fromRole: role, fromName: myName, toRole: otherRole, rating, comment: comment.trim() || 'Great collaboration.' })}
+            className="btn-primary mt-2 !py-2"
+          >
+            Submit review
+          </button>
+        </div>
+      )}
+    </Card>
   );
 }

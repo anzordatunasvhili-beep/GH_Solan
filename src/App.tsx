@@ -5,6 +5,9 @@ import { Dashboard } from './pages/Dashboard';
 import { Projects } from './pages/Projects';
 import { CreateProject } from './pages/CreateProject';
 import { ProjectDetail } from './pages/ProjectDetail';
+import { Contract } from './pages/Contract';
+import { Auth } from './pages/Auth';
+import { Kyc } from './pages/Kyc';
 import { Invitations } from './pages/Invitations';
 import { Payments } from './pages/Payments';
 import { Disputes } from './pages/Disputes';
@@ -16,8 +19,11 @@ export default function App() {
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<Landing />} />
+        <Route path="/auth" element={<Auth />} />
+        <Route path="/project/:id/contract" element={<Contract />} />
         <Route element={<Layout />}>
           <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/kyc" element={<Kyc />} />
           <Route path="/projects" element={<Projects />} />
           <Route path="/create" element={<CreateProject />} />
           <Route path="/project/:id" element={<ProjectDetail />} />

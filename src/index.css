@@ -1,4 +1,5 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500&display=swap');
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;0,8..60,700;1,8..60,400&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -67,5 +68,35 @@ body {
   }
   .gradient-text {
     @apply bg-sol-gradient bg-clip-text text-transparent;
+  }
+}
+
+/* Contract document uses a serif face for a formal, legal feel */
+.contract-paper {
+  font-family: 'Source Serif 4', Georgia, 'Times New Roman', serif;
+}
+
+/* Print: show only the contract paper, on white, at full width */
+@media print {
+  @page {
+    size: A4;
+    margin: 16mm;
+  }
+  html, body, #root {
+    background: #fff !important;
+    height: auto !important;
+  }
+  .print\:hidden { display: none !important; }
+  .contract-paper {
+    box-shadow: none !important;
+    max-width: none !important;
+    width: 100% !important;
+    padding: 0 !important;
+    color: #000 !important;
+  }
+  .break-inside-avoid { break-inside: avoid; }
+  * {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
   }
 }
